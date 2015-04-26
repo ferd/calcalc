@@ -21,7 +21,7 @@
 -type moment() :: float().
 -type time() :: float().
 -type fixed() :: integer().
--type date() :: #date{}.
+-type date() :: map().
 -type clock() :: #clock{}.
 -type angle() :: #angle{}.
 -type degrees() :: number().
@@ -48,7 +48,6 @@
 %%====================================================================
 %% API functions
 %%====================================================================
-
 
 %%====================================================================
 %% Internal functions
@@ -115,12 +114,12 @@ time_from_moment(T) -> mod(T,1).
 
 -spec to(calendar(), date() | fixed()) -> date().
 %% Calendar conversion mode
-to(Cal, D=#date{cal=Mod}) -> (mod(Cal)):from_fixed(Mod:to_fixed(D));
+to(Cal, D = #{cal := Mod}) -> (mod(Cal)):from_fixed(Mod:to_fixed(D));
 %% From fixed mode
 to(Cal, Fixed) when is_integer(Fixed) -> (mod(Cal)):from_fixed(Fixed).
 
 -spec date(calendar(), {integer(),integer(),integer()}) -> date().
-date(Cal, D={_,_,_}) -> (mod(Cal)):date(D).
+date(Cal, D=#{year := _, month := _, day := _}) -> (mod(Cal)):date(D).
 
 -spec epoch(calendar()) -> integer().
 epoch(Cal) -> (mod(Cal)):epoch().

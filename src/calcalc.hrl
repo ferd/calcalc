@@ -1,7 +1,7 @@
--record(date, {cal = ?MODULE :: module(),
-               year :: integer(),
-               month :: integer(),
-               day :: integer()}).
+-ifndef(CAL).
+-define(CAL, ?MODULE).
+-endif.
+
 -record(clock, {day :: integer(),
                 hour :: integer(),
                 min :: integer(),

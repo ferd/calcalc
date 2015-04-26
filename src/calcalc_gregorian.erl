@@ -11,11 +11,12 @@
 -spec epoch() -> integer().
 epoch() -> calcalc:fixed(1).
 
--spec date({integer(), integer(), integer()}) -> calcalc:date().
-date({Y,M,D}) -> #date{year=Y, month=M, day=D}.
+-spec date(map()) -> calcalc:date().
+date(#{year := Y, month := M, day := D}) ->
+    #{cal => ?CAL, year => Y, month => M, day => D}.
 
 -spec is_valid(calcalc:date()) -> boolean().
-is_valid(Date = #date{}) ->
+is_valid(Date = #{}) ->
     Date == from_fixed(to_fixed(Date)).
 
 january() -> 1.
@@ -32,7 +33,7 @@ november() -> 11.
 december() -> 12.
 
 -spec to_fixed(calcalc:date()) -> calcalc:fixed().
-to_fixed(#date{cal=?MODULE, year=Y, month=M, day=D}) ->
+to_fixed(#{cal := ?CAL, year := Y, month := M, day := D}) ->
     IsLeap = is_leap_year(Y),
     epoch() - 1 % start at 0
     + 365 * (Y-1) % non-leap days between 0 and last day of preceding year
@@ -48,26 +49,26 @@ to_fixed(#date{cal=?MODULE, year=Y, month=M, day=D}) ->
 from_fixed(Date) ->
     Year = year_from_fixed(Date),
     PriorDays = Date - new_year(Year),
-    March1st = to_fixed(#date{year=Year, month=march(), day=1}),
+    March1st = to_fixed(#{cal => ?CAL, year => Year, month => march(), day => 1}),
     IsLeap = is_leap_year(Year),
     Correction = if Date < March1st -> 0
                   ; IsLeap -> 1
                   ; Date >= March1st, not IsLeap -> 2
                  end,
     Month = floor((12 * (PriorDays + Correction) + 373)/367),
-    Day = 1 + Date - to_fixed(#date{year=Year, month=Month, day=1}),
-    #date{year = Year, month=Month, day=Day}.
+    Day = 1 + Date - to_fixed(#{cal => ?CAL, year => Year, month => Month, day => 1}),
+    #{cal => ?CAL, year => Year, month => Month, day => Day}.
 
 -spec day_number(calcalc:date()) -> 1..366.
-day_number(Date=#date{year=Y}) ->
-    date_difference(#date{year=Y-1, month=december(), day=31}, Date).
+day_number(Date=#{year := Y}) ->
+    date_difference(#{cal => ?CAL, year => Y-1, month => december(), day => 31}, Date).
 
 -spec days_remaining(calcalc:date()) -> 0..365.
-days_remaining(Date=#date{cal=?MODULE, year=Y}) ->
-    date_difference(Date, #date{year=Y, month=december(), day=31}).
+days_remaining(Date=#{cal := ?CAL, year := Y}) ->
+    date_difference(Date, #{cal => ?CAL, year => Y, month => december(), day => 31}).
 
 -spec date_difference(calcalc:date(), calcalc:date()) -> calcalc:fixed().
-date_difference(Date1=#date{}, Date2=#date{}) ->
+date_difference(Date1=#{}, Date2=#{}) ->
     to_fixed(Date2) - to_fixed(Date1).
 
 -spec year_from_fixed(calcalc:fixed()) -> integer().
@@ -92,8 +93,8 @@ year_range(Year) ->
     {new_year(Year), year_end(Year)}.
 
 new_year(Year) ->
-    to_fixed(#date{year=Year, month=january(), day=1}).
+    to_fixed(#{cal => ?CAL, year => Year, month => january(), day => 1}).
 
 year_end(Year) ->
-    to_fixed(#date{year=Year, month=december(), day=31}).
+    to_fixed(#{cal => ?CAL, year => Year, month => december(), day => 31}).
 
