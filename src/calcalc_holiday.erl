@@ -119,6 +119,13 @@ eastern_orthodox_annunciation(#{cal := calcalc_gregorian, year := Y}) ->
 eastern_orthodox_transfiguration(#{cal := calcalc_gregorian, year := Y}) ->
     julian_in_gregorian(calcalc_julian:august(), 6, Y).
 
+%% Coptic holidays
+coptic_christmas(#{cal := calcalc_gregorian, year := Y}) ->
+    coptic_in_gregorian(calcalc_coptic:koiak(), 29, Y).
+
+coptic_epiphany(#{cal := calcalc_gregorian, year := Y}) ->
+    coptic_in_gregorian(calcalc_coptic:tobe(), 11, Y).
+
 %% Allows to find Julian date calendar events into a gregorian year.
 %% It may return duplicate dates because far into the future (say year
 %% 41104) some julian dates will happen twice within the same
@@ -133,6 +140,16 @@ julian_in_gregorian(JulianMonth, JulianDay, GregorianYear) ->
                 #{year => Y, month => JulianMonth, day => JulianDay})),
     Date2 = calcalc_julian:to_fixed(calcalc_julian:date(
                 #{year => Y1, month => JulianMonth, day => JulianDay})),
+    list_range([Date1,Date2], calcalc_gregorian:year_range(GregorianYear)).
+
+%% Allows to find Coptic date calendar events into a gregorian year.
+coptic_in_gregorian(CopticMonth, CopticDay, GregorianYear) ->
+    Jan1 = calcalc_gregorian:new_year(GregorianYear),
+    #{year := Y} = calcalc_coptic:from_fixed(Jan1),
+    Date1 = calcalc_coptic:to_fixed(calcalc_coptic:date(
+                #{year => Y, month => CopticMonth, day => CopticDay})),
+    Date2 = calcalc_coptic:to_fixed(calcalc_coptic:date(
+                #{year => Y+1, month => CopticMonth, day => CopticDay})),
     list_range([Date1,Date2], calcalc_gregorian:year_range(GregorianYear)).
 
 list_range([], _) -> [];

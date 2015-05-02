@@ -134,8 +134,8 @@ epoch(Cal) -> (mod(Cal)):epoch().
 %epoch(julian) -> calcalc_julian:epoch();
 %epoch(gregorian) -> calcalc_gregorian:epoch();
 %epoch(iso) -> 1;
-%epoch(ethiopic) -> 2796;
-%epoch(coptic) -> 103605;
+%epoch(ethiopic) -> calcalc_ethiopic:epoch();
+%epoch(coptic) -> calcalc_coptic:epoch();
 %epoch(armenian) -> calcalc_armenian:epoch();
 %epoch(persian) -> 226896;
 %epoch(islamic) -> 227015;
