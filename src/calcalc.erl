@@ -12,7 +12,7 @@
 -include("calcalc.hrl").
 
 -type calendar() :: hebrew | mayan | hindu | chinese
-                  | egyptian | tibetan | julian | gregorian
+                  | egyptian | tibetan | julian | roman | gregorian
                   | iso | ethiopic | coptic | armenian | persian
                   | islamic | zoroastran | french_revolutionary
                   | ?bahai.
@@ -112,14 +112,16 @@ jd_from_fixed(Fixed) -> jd_from_moment(Fixed).
 -spec time_from_moment(moment()) -> time().
 time_from_moment(T) -> mod(T,1).
 
--spec to(calendar(), date() | fixed()) -> date().
+-spec to(fixed | calendar(), date() | fixed()) -> date().
+%% To fixed mode
+to(fixed, D = #{cal := Mod}) -> Mod:to_fixed(D);
 %% Calendar conversion mode
 to(Cal, D = #{cal := Mod}) -> (mod(Cal)):from_fixed(Mod:to_fixed(D));
 %% From fixed mode
 to(Cal, Fixed) when is_integer(Fixed) -> (mod(Cal)):from_fixed(Fixed).
 
 -spec date(calendar(), {integer(),integer(),integer()}) -> date().
-date(Cal, D=#{year := _, month := _, day := _}) -> (mod(Cal)):date(D).
+date(Cal, D=#{}) -> (mod(Cal)):date(D).
 
 -spec epoch(calendar()) -> integer().
 epoch(Cal) -> (mod(Cal)):epoch().
@@ -129,7 +131,7 @@ epoch(Cal) -> (mod(Cal)):epoch().
 %epoch(chinese) -> -963099;
 %epoch(egyptian) -> calcalc_egyptian:epoch();
 %epoch(tibetan) -> -46410;
-%epoch(julian) -> -1;
+%epoch(julian) -> calcalc_julian:epoch();
 %epoch(gregorian) -> calcalc_gregorian:epoch();
 %epoch(iso) -> 1;
 %epoch(ethiopic) -> 2796;
@@ -141,6 +143,10 @@ epoch(Cal) -> (mod(Cal)):epoch().
 %epoch(french_revolutionary) -> 654415;
 %epoch(?bahai) -> 673222.
 
+-spec is_valid(date()) -> boolean().
+is_valid(Date=#{cal := Cal}) -> Cal:is_valid(Date);
+is_valid(_) -> false.
+
 -spec mod(calendar()) -> module().
 mod(hebrew) -> calcalc_hebrew;
 mod(mayan) -> calcalc_mayan;
@@ -149,6 +155,7 @@ mod(chinese) -> calcalc_chinese;
 mod(egyptian) -> calcalc_egyptian;
 mod(tibetan) -> calcalc_tibetan;
 mod(julian) -> calcalc_julian;
+mod(roman) -> calcalc_roman;
 mod(gregorian) -> calcalc_gregorian;
 mod(iso) -> calcalc_iso;
 mod(ethiopic) -> calcalc_ethiopic;

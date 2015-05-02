@@ -62,6 +62,7 @@ christmas(#{cal := calcalc_gregorian, year := Y}) ->
           year => Y, month => calcalc_gregorian:december(), day => 25}
     ).
 
+
 advent(#{cal := calcalc_gregorian, year := Y}) ->
     calcalc_day_of_week:kday_nearest(
         calcalc_day_of_week:sunday(),
@@ -105,3 +106,40 @@ unlucky_fridays_in_range(FA, FB) when is_integer(FA), is_integer(FB) ->
             []
     end.
 
+%% Julian holidays
+eastern_orthodox_christmas(#{cal := calcalc_gregorian, year := Y}) ->
+    julian_in_gregorian(calcalc_julian:december(), 25, Y).
+
+eastern_orthodox_epiphany(#{cal := calcalc_gregorian, year := Y}) ->
+    julian_in_gregorian(calcalc_julian:january(), 6, Y).
+
+eastern_orthodox_annunciation(#{cal := calcalc_gregorian, year := Y}) ->
+    julian_in_gregorian(calcalc_julian:march(), 25, Y).
+
+eastern_orthodox_transfiguration(#{cal := calcalc_gregorian, year := Y}) ->
+    julian_in_gregorian(calcalc_julian:august(), 6, Y).
+
+%% Allows to find Julian date calendar events into a gregorian year.
+%% It may return duplicate dates because far into the future (say year
+%% 41104) some julian dates will happen twice within the same
+%% gregorian year.
+julian_in_gregorian(JulianMonth, JulianDay, GregorianYear) ->
+    Jan1 = calcalc_gregorian:new_year(GregorianYear),
+    #{year := Y} = calcalc_julian:from_fixed(Jan1),
+    Y1 = if Y =:= -1 -> 1
+          ; Y =/= -1 -> Y+1
+         end,
+    Date1 = calcalc_julian:to_fixed(calcalc_julian:date(
+                #{year => Y, month => JulianMonth, day => JulianDay})),
+    Date2 = calcalc_julian:to_fixed(calcalc_julian:date(
+                #{year => Y1, month => JulianMonth, day => JulianDay})),
+    list_range([Date1,Date2], calcalc_gregorian:year_range(GregorianYear)).
+
+list_range([], _) -> [];
+list_range([H|T], Range) ->
+    case in_range(H, Range) of
+        true -> [H | list_range(T, Range)];
+        false -> list_range(T, Range)
+    end.
+
+in_range(X, {A, B}) -> A =< X andalso X =< B.
