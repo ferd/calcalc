@@ -126,6 +126,20 @@ coptic_christmas(#{cal := calcalc_gregorian, year := Y}) ->
 coptic_epiphany(#{cal := calcalc_gregorian, year := Y}) ->
     coptic_in_gregorian(calcalc_coptic:tobe(), 11, Y).
 
+%% Islamic holidays
+%% Up to 3 islamic years may end up present within a gregorian year.
+%%
+%% The entire month of ramadan counts here, but we return the first day.
+%% Do note that islamic days/holidays start at sunset the prior evening.
+%% The calculation is again not fully accurate because it may depend
+%% on proclamation of religous authorities.
+ramadan(#{cal := calcalc_gregorian, year := Y}) ->
+    islamic_in_gregorian(calcalc_islamic:ramadan(), 1, Y).
+
+mawlid_an_nabi(#{cal := calcalc_gregorian, year := Y}) ->
+    islamic_in_gregorian(calcalc_islamic:rabi_al_awwal(), 12, Y).
+
+
 %% Allows to find Julian date calendar events into a gregorian year.
 %% It may return duplicate dates because far into the future (say year
 %% 41104) some julian dates will happen twice within the same
@@ -151,6 +165,18 @@ coptic_in_gregorian(CopticMonth, CopticDay, GregorianYear) ->
     Date2 = calcalc_coptic:to_fixed(calcalc_coptic:date(
                 #{year => Y+1, month => CopticMonth, day => CopticDay})),
     list_range([Date1,Date2], calcalc_gregorian:year_range(GregorianYear)).
+
+%% Allows to find islamic date calendar events into a gregorian year.
+islamic_in_gregorian(IslamicMonth, IslamicDay, GregorianYear) ->
+    Jan1 = calcalc_gregorian:new_year(GregorianYear),
+    #{year := Y} = calcalc_islamic:from_fixed(Jan1),
+    Date1 = calcalc_islamic:to_fixed(calcalc_coptic:date(
+                #{year => Y, month => IslamicMonth, day => IslamicDay})),
+    Date2 = calcalc_islamic:to_fixed(calcalc_coptic:date(
+                #{year => Y+1, month => IslamicMonth, day => IslamicDay})),
+    Date3 = calcalc_islamic:to_fixed(calcalc_coptic:date(
+                #{year => Y+2, month => IslamicMonth, day => IslamicDay})),
+    list_range([Date1,Date2,Date3], calcalc_gregorian:year_range(GregorianYear)).
 
 list_range([], _) -> [];
 list_range([H|T], Range) ->
