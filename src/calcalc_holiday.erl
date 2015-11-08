@@ -170,13 +170,34 @@ coptic_in_gregorian(CopticMonth, CopticDay, GregorianYear) ->
 islamic_in_gregorian(IslamicMonth, IslamicDay, GregorianYear) ->
     Jan1 = calcalc_gregorian:new_year(GregorianYear),
     #{year := Y} = calcalc_islamic:from_fixed(Jan1),
-    Date1 = calcalc_islamic:to_fixed(calcalc_coptic:date(
+    Date1 = calcalc_islamic:to_fixed(calcalc_islamic:date(
                 #{year => Y, month => IslamicMonth, day => IslamicDay})),
-    Date2 = calcalc_islamic:to_fixed(calcalc_coptic:date(
+    Date2 = calcalc_islamic:to_fixed(calcalc_islamic:date(
                 #{year => Y+1, month => IslamicMonth, day => IslamicDay})),
-    Date3 = calcalc_islamic:to_fixed(calcalc_coptic:date(
+    Date3 = calcalc_islamic:to_fixed(calcalc_islamic:date(
                 #{year => Y+2, month => IslamicMonth, day => IslamicDay})),
     list_range([Date1,Date2,Date3], calcalc_gregorian:year_range(GregorianYear)).
+
+%% Hebrew
+yom_kippur(#{cal := calcalc_gregorian, year := Y}) ->
+    HY = 1 + Y - calcalc_gregorian:year_from_fixed(calcalc_hebrew:epoch()),
+    calcalc_hebrew:to_fixed(#{cal => calcalc_hebrew, year => HY,
+                              month => calcalc_hebrew:tishri(), day => 10}).
+
+passover(#{cal := calcalc_gregorian, year := Y}) ->
+    HY = Y - calcalc_gregorian:year_from_fixed(calcalc_hebrew:epoch()),
+    {calcalc_hebrew:to_fixed(#{cal => calcalc_hebrew, year => HY,
+                               month => calcalc_hebrew:nisan(), day => 15}),
+     calcalc_hebrew:to_fixed(#{cal => calcalc_hebrew, year => HY,
+                               month => calcalc_hebrew:nisan(), day => 21})}.
+
+purim(#{cal := calcalc_gregorian, year := Y}) ->
+    HY = Y - calcalc_gregorian:year_from_fixed(calcalc_hebrew:epoch()),
+    LastMonth = calcalc_hebrew:last_month(HY),
+    calcalc_hebrew:to_fixed(#{cal => calcalc_hebrew, year => HY,
+                              month => LastMonth, day => 14}).
+
+
 
 list_range([], _) -> [];
 list_range([H|T], Range) ->

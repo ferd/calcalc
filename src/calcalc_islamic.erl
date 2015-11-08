@@ -1,6 +1,7 @@
 %% This calendar is arithmetic and not fully realistic; many
 %% islamic calendars depend on proclamation of new moons by
 %% religious authorities.
+%% Days actually start on prior evenings, at sunset
 -module(calcalc_islamic).
 -compile(export_all).
 -export([epoch/0, date/1, is_valid/1,
@@ -36,6 +37,7 @@ shawwal() -> 10.
 dhu_al_qadah() -> 11.
 dhu_al_hijjah() -> 12.
 
+-spec to_fixed(calcalc:date()) -> calcalc:fixed().
 to_fixed(#{cal := ?CAL, year := Y, month := M, day := D}) ->
     epoch() - 1
     + (Y-1) * 354 % avg lunar year: 354 + 11/30
@@ -43,6 +45,7 @@ to_fixed(#{cal := ?CAL, year := Y, month := M, day := D}) ->
     + 29 * (M-1) + floor(M/2) % 29 or 30 days months
     + D.
 
+-spec from_fixed(calcalc:fixed()) -> calcalc:date().
 from_fixed(Date) ->
     Y = floor((30 * (Date - epoch()) + 10646)/10631),
     PriorDays = Date - to_fixed(#{cal => ?CAL, year => Y, month => 1, day => 1}),

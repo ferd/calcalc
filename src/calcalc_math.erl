@@ -1,5 +1,6 @@
 -module(calcalc_math).
--export([sum/3,
+-compile({no_auto_import, [min/2,max/2]}).
+-export([sum/3, min/2, max/2,
          lcm/2, gcd/2, mod/2, amod/2, signum/1,
          floor/1, ceil/1,
          deg/1]).
@@ -11,6 +12,27 @@ sum(F, I, P) ->
     case P(I) == 0 of
         true -> 0;
         false -> F(I) + sum(F, I+1, P)
+    end.
+
+%% @doc `min(I, Pred)' returns the first `I' value for which
+%% `Pred(I)' returns `true', and searches by increments of `+1'.
+-spec min(I, Pred::fun((I) -> boolean())) -> number() when
+    I :: number().
+min(I, P) ->
+    case P(I) of
+        true -> I;
+        false -> min(I+1, P)
+    end.
+
+%% @doc `max(I, Pred)' returns the last `I' value for which
+%% `Pred(I)' returns `true', and searches by increments of `+1'.
+%% As soon as `Pred(I)' returns `false', `I-1' is returned.
+-spec max(I, Pred::fun((I) -> boolean())) -> number() when
+    I :: number().
+max(I, P) ->
+    case P(I) of
+        true -> max(I+1, P);
+        false -> I-1
     end.
 
 -spec lcm(integer(), integer()) -> integer().
