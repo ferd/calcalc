@@ -147,3 +147,4 @@ is_short_kislev(Year) ->
 
 days_in_year(Year) ->
     new_year(Year+1) - new_year(Year).
+

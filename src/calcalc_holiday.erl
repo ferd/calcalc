@@ -197,6 +197,85 @@ purim(#{cal := calcalc_gregorian, year := Y}) ->
     calcalc_hebrew:to_fixed(#{cal => calcalc_hebrew, year => HY,
                               month => LastMonth, day => 14}).
 
+ta_anit_esther(GregorianDate) ->
+    PurimDate = purim(GregorianDate),
+    case {calcalc_day_of_week:from_fixed(PurimDate),
+          calcalc_day_of_week:sunday()} of
+        {X, X} -> PurimDate-3;
+        _ -> PurimDate-1
+    end.
+
+tishah_be_av(#{cal := calcalc_gregorian, year := Y}) ->
+    HY = Y - calcalc_gregorian:year_from_fixed(calcalc_hebrew:epoch()),
+    AV9 = calcalc_hebrew:to_fixed(#{cal => calcalc_hebrew, year => HY,
+                                    month => calcalc_hebrew:av(), day => 9}),
+    case {calcalc_day_of_week:from_fixed(AV9),
+          calcalc_day_of_week:saturday()} of
+        {X,X} -> AV9 + 1;
+        _ -> AV9
+    end.
+
+yom_ha_zikkaron(#{cal := calcalc_gregorian, year := Y}) ->
+    HY = Y - calcalc_gregorian:year_from_fixed(calcalc_hebrew:epoch()),
+    Iyyar4 = calcalc_hebrew:to_fixed(#{cal => calcalc_hebrew, year => HY,
+                                       month => calcalc_hebrew:iyyar(), day => 4}),
+    Iyyar4DoW = calcalc_day_of_week:from_fixed(Iyyar4),
+    Thursday = calcalc_day_of_week:thursday(),
+    Friday = calcalc_day_of_week:friday(),
+    Sunday = calcalc_day_of_week:sunday(),
+    if Iyyar4DoW =:= Thursday; Iyyar4DoW =:= Friday ->
+        calcalc_day_of_week:kday_before(calcalc_day_of_week:wednesday(), Iyyar4);
+       Iyyar4DoW =:= Sunday ->
+        Iyyar4DoW + 1;
+       true ->
+        Iyyar4
+    end.
+
+%% beginning of sh'ela (request for rain) outside Israel, follows
+%% the structure of the coptic calendar. In israel, it starts
+%% on Marheshvan 7.
+sh_ela(#{cal := calcalc_gregorian, year := Y}) ->
+    hd(coptic_in_gregorian(calcalc_coptic:athor(), 26, Y)).
+
+birkath_ha_hama(#{cal := calcalc_gregorian, year := Y}) ->
+    Dates = coptic_in_gregorian(calcalc_coptic:paremotep(), 30, Y),
+    case Dates of
+        [] ->
+            [];
+        [Date|_] ->
+            #{year := CY} = calcalc_coptic:from_fixed(Date),
+            case calcalc_math:mod(CY, 28) of
+                17 -> Dates;
+                _ -> []
+            end
+    end.
+
+%% Calculates the hebrew birthday of someone for a given hebrew year --
+%% for birthdays, gregorian and hebrew years don't coincide properly, so
+%% multiple values may be returned when calculating with a gregorian date.
+-spec hebrew_birthday(BirthDate, CurrentHebrewYear | GregorianYear) -> Date when
+    BirthDate :: calcalc:date(),
+    CurrentHebrewYear :: calcalc:date(),
+    GregorianYear :: calcalc:date(),
+    Date :: calcalc:fixed().
+hebrew_birthday(#{cal := calcalc_hebrew, year := BY, month := BM, day := BD},
+                #{cal := calcalc_hebrew, year := HY}) ->
+    case {BM, calcalc_hebrew:last_month(BY)} of
+        {X,X} ->
+            calcalc_hebrew:to_fixed(#{cal => calcalc_hebrew, year => HY,
+                                      month => calcalc_hebrew:last_month(HY),
+                                      day => BD});
+        _ ->
+            calcalc_hebrew:to_fixed(#{cal => calcalc_hebrew, year => HY,
+                                      month => BM, day => 1}) + BD - 1
+    end;
+hebrew_birthday(BirthDate,
+                #{cal := calcalc_gregorian, year := GregorianYear}) ->
+    Jan1 = calcalc_gregorian:new_year(GregorianYear),
+    HebrewDate = #{year := HY} = calcalc_hebrew:from_fixed(Jan1),
+    Date1 = hebrew_birthday(BirthDate, HebrewDate),
+    Date2 = hebrew_birthday(BirthDate, HebrewDate#{year => HY+1}),
+    list_range([Date1, Date2], calcalc_gregorian:year_range(GregorianYear)).
 
 
 list_range([], _) -> [];
