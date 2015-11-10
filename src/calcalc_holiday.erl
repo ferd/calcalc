@@ -1,6 +1,7 @@
 -module(calcalc_holiday).
 -compile(export_all).
 -include("calcalc.hrl").
+-import(calcalc_math, [mod/2, floor/1]).
 
 us_independence_day(#{cal := calcalc_gregorian, year := Y}) ->
     calcalc_gregorian:to_fixed(
@@ -118,6 +119,36 @@ eastern_orthodox_annunciation(#{cal := calcalc_gregorian, year := Y}) ->
 
 eastern_orthodox_transfiguration(#{cal := calcalc_gregorian, year := Y}) ->
     julian_in_gregorian(calcalc_julian:august(), 6, Y).
+
+%% non-Finnish Orthodox Easter
+orthodox_easter(#{cal := calcalc_gregorian, year := Y}) ->
+    %% Epacts are approximation of lunar phases
+    ShiftedEpact = mod(14 + 11 * mod(Y, 19), 30),
+    JulianYear = if Y > 0 -> Y;
+                    Y =< 0 -> Y-1
+                 end,
+    PaschalMoon = calcalc_julian:to_fixed(
+            #{cal => calcalc_julian, year => JulianYear,
+              month => calcalc_julian:april(), day => 19}
+    ) - ShiftedEpact,
+    calcalc_day_of_week:kday_after(calcalc_day_of_week:sunday(), PaschalMoon).
+
+%% gregorian easter
+easter(#{cal := calcalc_gregorian, year := Y}) ->
+    Century = floor(Y/100)+1,
+    ShiftedEpact = mod(14 + 11 * mod(Y, 19) - floor(0.75 * Century)
+                       + floor((5 + 8 * Century)/25), 30),
+    YMod19 = mod(Y, 19),
+    AdjustedEpact = case ShiftedEpact of
+        0 -> 1;
+        1 when 10 < YMod19 -> 1;
+        _ -> ShiftedEpact
+    end,
+    PaschalMoon = calcalc_gregorian:to_fixed(
+            #{cal => calcalc_gregorian, year => Y,
+              month => calcalc_gregorian:april(), day => 19}
+    ) - AdjustedEpact,
+    calcalc_day_of_week:kday_after(calcalc_day_of_week:sunday(), PaschalMoon).
 
 %% Coptic holidays
 coptic_christmas(#{cal := calcalc_gregorian, year := Y}) ->
@@ -244,7 +275,7 @@ birkath_ha_hama(#{cal := calcalc_gregorian, year := Y}) ->
             [];
         [Date|_] ->
             #{year := CY} = calcalc_coptic:from_fixed(Date),
-            case calcalc_math:mod(CY, 28) of
+            case mod(CY, 28) of
                 17 -> Dates;
                 _ -> []
             end
