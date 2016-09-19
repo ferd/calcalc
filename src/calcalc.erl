@@ -120,7 +120,7 @@ to(Cal, D = #{cal := Mod}) -> (mod(Cal)):from_fixed(Mod:to_fixed(D));
 %% From fixed mode
 to(Cal, Fixed) when is_integer(Fixed) -> (mod(Cal)):from_fixed(Fixed).
 
--spec date(calendar(), {integer(),integer(),integer()}) -> date().
+-spec date(calendar(), #{}) -> date().
 date(Cal, D=#{}) -> (mod(Cal)):date(D).
 
 -spec epoch(calendar()) -> integer().
@@ -150,6 +150,8 @@ is_valid(_) -> false.
 -spec mod(calendar()) -> module().
 mod(hebrew) -> calcalc_hebrew;
 mod(mayan) -> calcalc_mayan;
+mod(old_hindu_solar) -> calcalc_old_hindu_solar;
+mod(old_hindu_lunisolar) -> calcalc_old_hindu_lunisolar;
 mod(hindu) -> calcalc_hindu;
 mod(chinese) -> calcalc_chinese;
 mod(egyptian) -> calcalc_egyptian;

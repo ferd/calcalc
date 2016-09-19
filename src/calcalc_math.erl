@@ -35,7 +35,7 @@ max(I, P) ->
         false -> I-1
     end.
 
--spec lcm(integer(), integer()) -> integer().
+-spec lcm(integer(), integer()) -> number().
 lcm(X, Y) -> (X*Y) / gcd(X, Y).
 
 -spec gcd(integer(), integer()) -> integer().
