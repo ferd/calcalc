@@ -151,8 +151,6 @@ is_valid(_) -> false.
 mod(hebrew) -> calcalc_hebrew;
 mod(mayan) -> calcalc_mayan_long; % long count calendar alias
 mod(mayan_long) -> calcalc_mayan_long; % long count calendar
-mod(mayan_haab) -> calcalc_mayan_haab; % (Month, Day) calendar
-mod(mayan_tzolkin) -> calcalc_mayan_tzolkin; % (Number, Name) calendar
 mod(old_hindu_solar) -> calcalc_old_hindu_solar;
 mod(old_hindu_lunisolar) -> calcalc_old_hindu_lunisolar;
 mod(hindu) -> calcalc_hindu;
@@ -171,5 +169,11 @@ mod(persian) -> calcalc_persian;
 mod(islamic) -> calcalc_islamic;
 mod(zoroastrian) -> calcalc_zoroastrian;
 mod(french_revolutionary) -> calcalc_french_revolutionary;
-mod(?bahai) -> calcalc_bahai.
+mod(?bahai) -> calcalc_bahai;
+%% Year-less calendars
+mod(mayan_haab) -> calcalc_mayan_haab; % (Month, Day) calendar
+mod(mayan_tzolkin) -> calcalc_mayan_tzolkin; % (Number, Name) calendar
+mod(aztec_xiuhmolpilli) -> calcalc_aztec_xiuhmolpilli; % joined aztec, seems more common, but sometimes has the name swapped with xihuitl
+mod(aztec_xihuitl) -> calcalc_aztec_xihuitl; % (Month, Day) calendar
+mod(aztec_tonalpohualli) -> calcalc_aztec_tonalpohualli. % (Number, Name) calendar
 

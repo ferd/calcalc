@@ -1,4 +1,4 @@
--module(calcalc_mayan_tzolkin).
+-module(calcalc_aztec_tonalphualli).
 -export([epoch/0, date/1, is_valid/1, to_fixed/1,
          from_fixed/1]).
 -compile(export_all).
@@ -7,32 +7,35 @@
 -include("calcalc.hrl").
 
 -spec epoch() -> integer().
-epoch() -> calcalc:fixed_from_jd(584283) - ordinal(4, 20).
+epoch() ->
+    calcalc_julian:to_fixed(calcalc_julian:date(
+        #{year => 1521, month => calcalc_julian:august(), day => 13}
+    )) - ordinal(1,5).
 
 -spec date(map()) -> calcalc:date().
 date(#{number := Num, name := Name}) ->
     #{cal => ?CAL, number => Num, name => Name}.
 
-imix() -> 1.
-ik() -> 2.
-akbal() -> 3.
-kan() -> 4.
-chicchan() -> 5.
-cimi() -> 6.
-manik() -> 7.
-lamat() -> 8.
-muluc() -> 9.
-oc() -> 10.
-chuen() -> 11.
-eb() -> 12.
-ben() -> 13.
-ix() -> 14.
-men() -> 15.
-cib() -> 16.
-caban() -> 17.
-etznab() -> 18.
-cauac() -> 19.
-ahau() -> 20.
+cipactli() -> 1.
+ehecatl() -> 2.
+calli() -> 3.
+cuetzpallin() -> 4.
+coatl() -> 5.
+miquiztli() -> 6.
+mazatl() -> 7.
+tochtli() -> 8.
+atl() -> 9.
+itzcuintli() -> 10.
+ozomatli() -> 11.
+malinalli() -> 12.
+acatl() -> 13.
+ocelotl() -> 14.
+quauhtli() -> 15.
+cozcaquauhtli() -> 16.
+ollin() -> 17.
+tecpatl() -> 18.
+quiahuitl() -> 19.
+xochitl() -> 20.
 
 -spec is_valid(calcalc:date()) -> boolean().
 is_valid(Date = #{}) ->
@@ -40,7 +43,7 @@ is_valid(Date = #{}) ->
 
 -spec to_fixed(calcalc:date()) -> calcalc:fixed().
 to_fixed(#{cal := ?CAL, month := _, day := _}) ->
-    error(mayan_tzolkin_has_no_year_and_cannot_be_converted).
+    error(aztec_tonalphualli_has_no_year_and_cannot_be_converted).
 
 -spec from_fixed(calcalc:fixed()) -> calcalc:date().
 from_fixed(Date) ->
