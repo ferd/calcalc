@@ -32,8 +32,22 @@ from_fixed(Date) ->
     Katun = floor(DayOfBaktun / 7200),
     DayOfKatun = mod(DayOfBaktun, 7200),
     Tun = floor(DayOfKatun / 360),
-    DayOfTun = mod(DayOfKatun, 260),
+    DayOfTun = mod(DayOfKatun, 360),
     Uinal = floor(DayOfTun / 20),
     Kin = mod(DayOfTun, 20),
     #{cal => ?CAL, baktun => Baktun, katun => Katun, tun => Tun,
       uinal => Uinal, kin => Kin}.
+
+%% Calculate the calendar round (haab + tzolkin), forming a cycle
+%% of ~52 solar years. We seek the latest date on or before `Date'
+%% that falls on a specific date of the calendar round.
+round_on_or_before(Haab, Tzolkin, Date) ->
+    HaabCount = calcalc_mayan_haab:ordinal(Haab) + calcalc_mayan_haab:epoch(),
+    TzolkinCount = calcalc_mayan_tzolkin:ordinal(Tzolkin) + calcalc_mayan_tzolkin:epoch(),
+    Diff = TzolkinCount - HaabCount,
+    case mod(Diff, 5) of
+        0 ->
+            Date - mod(Date - HaabCount - 365 * Diff, 18980);
+        _ ->
+            undefined
+    end.

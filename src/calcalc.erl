@@ -149,7 +149,10 @@ is_valid(_) -> false.
 
 -spec mod(calendar()) -> module().
 mod(hebrew) -> calcalc_hebrew;
+mod(mayan) -> calcalc_mayan_long; % long count calendar alias
 mod(mayan_long) -> calcalc_mayan_long; % long count calendar
+mod(mayan_haab) -> calcalc_mayan_haab; % (Month, Day) calendar
+mod(mayan_tzolkin) -> calcalc_mayan_tzolkin; % (Number, Name) calendar
 mod(old_hindu_solar) -> calcalc_old_hindu_solar;
 mod(old_hindu_lunisolar) -> calcalc_old_hindu_lunisolar;
 mod(hindu) -> calcalc_hindu;
