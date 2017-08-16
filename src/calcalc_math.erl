@@ -1,5 +1,5 @@
 -module(calcalc_math).
--compile({no_auto_import, [min/2,max/2]}).
+-compile({no_auto_import, [min/2,max/2,ceil/1,floor/1]}).
 -export([sum/3, min/2, max/2,
          lcm/2, gcd/2, mod/2, amod/2, signum/1,
          floor/1, ceil/1,

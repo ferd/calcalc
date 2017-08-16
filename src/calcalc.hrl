@@ -9,3 +9,5 @@
 -record(angle, {degree :: calcalc:degrees(),
                 arcmin,
                 arcsec}).
+
+-compile({no_auto_import,[ceil/1, floor/1]}).

@@ -308,7 +308,20 @@ hebrew_birthday(BirthDate,
     Date2 = hebrew_birthday(BirthDate, HebrewDate#{year => HY+1}),
     list_range([Date1, Date2], calcalc_gregorian:year_range(GregorianYear)).
 
+%% Bali
+kajeng_keliwon(#{cal := calcalc_gregorian, year := GregorianYear}) ->
+    Year = calcalc_gregorian:year_range(GregorianYear),
+    Delta = calcalc_bali:day(0),
+    positions_in_range(9, 15, Delta, Year).
 
+tumpek(#{cal := calcalc_gregorian, year := GregorianYear}) ->
+    Year = calcalc_gregorian:year_range(GregorianYear),
+    Delta = calcalc_bali:day(0),
+    positions_in_range(14, 35, Delta, Year).
+
+%%%%%%%%%%%%%
+%%% Utils %%%
+%%%%%%%%%%%%%
 list_range([], _) -> [];
 list_range([H|T], Range) ->
     case in_range(H, Range) of
@@ -317,3 +330,10 @@ list_range([H|T], Range) ->
     end.
 
 in_range(X, {A, B}) -> A =< X andalso X =< B.
+
+positions_in_range(N, C, Delta, {A,B}) ->
+    Pos = A + mod(N - A - Delta - 1, C),
+    if Pos > B  -> []
+    ;  Pos =< B -> [Pos | positions_in_range(N, C, Delta, {Pos+1, B})]
+    end.
+

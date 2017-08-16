@@ -171,6 +171,7 @@ mod(zoroastrian) -> calcalc_zoroastrian;
 mod(french_revolutionary) -> calcalc_french_revolutionary;
 mod(?bahai) -> calcalc_bahai;
 %% Year-less calendars
+mod(bali) -> calcalc_bali;
 mod(mayan_haab) -> calcalc_mayan_haab; % (Month, Day) calendar
 mod(mayan_tzolkin) -> calcalc_mayan_tzolkin; % (Number, Name) calendar
 mod(aztec_xiuhmolpilli) -> calcalc_aztec_xiuhmolpilli; % joined aztec, seems more common, but sometimes has the name swapped with xihuitl
