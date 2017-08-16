@@ -3,7 +3,7 @@
 -export([sum/3, min/2, max/2,
          lcm/2, gcd/2, mod/2, amod/2, signum/1,
          floor/1, ceil/1,
-         deg/1]).
+         deg/1, poly/2, sigma/2, final/2, next/2]).
 
 -spec sum(F::fun((I) -> number()),
           I :: number(),
@@ -68,3 +68,31 @@ floor(X) when X < 0 ->
 ceil(X) -> -floor(-X).
 
 deg(X) -> X.
+
+-spec poly(number(), [number()]) -> number().
+poly(_, []) -> 0;
+poly(X, [A|As]) -> A + X*poly(X, As).
+
+-spec sigma([[number(), ...]], fun()) -> number().
+sigma(ListOfLists, Fun) ->
+    case lists:all(fun(L) -> L =:= [] end, ListOfLists) of
+        true ->
+            0;
+        false ->
+            Current = [hd(L) || L <- ListOfLists],
+            Next = [tl(L) || L <- ListOfLists],
+            Fun(Current) + sigma(Next, Fun)
+    end.
+
+final(K, Pred) ->
+    NewK = K+1,
+    case not Pred(NewK) of
+        true -> K;
+        false -> final(NewK, Pred)
+    end.
+
+next(K, Pred) ->
+    case Pred(K) of
+        true -> K;
+        false -> next(K+1, Pred)
+    end.

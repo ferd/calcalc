@@ -99,18 +99,11 @@ fixed_from_mjd(Mjd) -> Mjd + mjd_epoch().
 -spec mjd_from_fixed(fixed()) -> modified_julian_day().
 mjd_from_fixed(Date) -> Date - mjd_epoch().
 
--spec fixed_from_moment(moment()) -> fixed().
-fixed_from_moment(Moment) -> floor(Moment).
-
 -spec fixed_from_jd(julian_day()) -> fixed().
 fixed_from_jd(Jd) -> floor(moment_from_jd(Jd)).
 
 -spec jd_from_fixed(fixed()) -> julian_day().
 jd_from_fixed(Fixed) -> jd_from_moment(Fixed).
-
-%% Time of day
--spec time_from_moment(moment()) -> time().
-time_from_moment(T) -> mod(T,1).
 
 -spec to(fixed | calendar(), date() | fixed()) -> date().
 %% To fixed mode
