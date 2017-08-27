@@ -1,7 +1,8 @@
 -module(calcalc_search).
 -export([invert_angular/4, binary_search/4,
          next/2, final/2]).
--import(calcalc_math, [mod/2, deg/1]).
+-import(calcalc_math, [mod/2]).
+-import(calcalc_astro, [deg/1]).
 
 %% Find inverse of angular function `F' at point `Y' within interval
 %% `[A..B]'.

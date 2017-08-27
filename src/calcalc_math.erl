@@ -3,7 +3,7 @@
 -export([sum/3, min/2, max/2,
          lcm/2, gcd/2, mod/2, amod/2, signum/1,
          floor/1, ceil/1,
-         deg/1, poly/2, sigma/2, final/2, next/2]).
+         poly/2, sigma/2, final/2, next/2]).
 
 -spec sum(F::fun((I) -> number()),
           I :: number(),
@@ -66,8 +66,6 @@ floor(X) when X < 0 ->
     end.
 
 ceil(X) -> -floor(-X).
-
-deg(X) -> X.
 
 -spec poly(number(), [number()]) -> number().
 poly(_, []) -> 0;

@@ -14,22 +14,6 @@
 -type location() ::  #{latitude := angle(), longitude := angle(),
                        elevation := meters(), zone := hours()}.
 
-mecca() ->
-    #{latitude => angle(21,25,24), longitude => angle(39,49,24),
-      elevation => mt(298), zone => hr(3)}.
-
-jerusalem() ->
-    #{latitude => deg(31.8), longitude => deg(35.2),
-      elevation => mt(800), zone => hr(2)}.
-
-urbana() ->
-    #{latitude => deg(40.1), longitude => deg(-88.2),
-      elevation => mt(225), zone => hr(-6)}.
-
-greenwich() ->
-    #{latitude => deg(51.4777815), longitude => deg(0),
-      elevation => mt(46.9), zone => hr(0)}.
-
 -spec direction(location(), location()) -> angle().
 direction(_Locale = #{latitude := Phi, longitude := Psi},
           _Focus = #{latitude := PhiPrime, longitude := PsiPrime}) ->
@@ -242,20 +226,6 @@ spring() -> deg(0).
 summer() -> deg(90).
 autumn() -> deg(180).
 winter() -> deg(270).
-
-%% Tested at about 1s of precision off from the book;
-%% TODO: see if the problem is in bad copy of some values
-%%       or floating point number variations between Erlang and CL.
-urbana_winter(#{cal := calcalc_gregorian, year := Y}) ->
-    urbana_winter(Y);
-urbana_winter(Y) when is_integer(Y) ->
-    NewYear = calcalc_gregorian:date(
-        #{year => Y, month => calcalc_gregorian:january(), day => 1}
-    ),
-    standard_from_universal(
-      solar_longitude_after( winter(), calcalc_gregorian:to_fixed(NewYear)),
-      urbana()
-    ).
 
 precession(T) ->
     C = julian_centuries(T),
@@ -633,10 +603,6 @@ find_horizon(#{elevation := E}) ->
     R = mt(6.372e6),
     Dip = acos(R/(R+H)),
     angle(0,50,0) + Dip + secs(19) * math:sqrt(H).
-
-urbana_sunset(GDate = #{cal := calcalc_gregorian}) ->
-    D = calcalc_gregorian:to_fixed(GDate),
-    time_from_moment(sunset(D, urbana())).
 
 
 standard_from_sundial(T, Locale) ->

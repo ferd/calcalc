@@ -319,6 +319,17 @@ tumpek(#{cal := calcalc_gregorian, year := GregorianYear}) ->
     Delta = calcalc_bali:day(0),
     positions_in_range(14, 35, Delta, Year).
 
+%% Persian
+naw_ruz(#{cal := calcalc_gregorian, year := GYear}) -> % new year!
+    PYear = 1+GYear-calcalc_gregorian:year_from_fixed(calcalc_persian:epoch()),
+    Y = case PYear =< 0 of
+            true -> PYear - 1;
+            false -> PYear
+        end,
+    calcalc_persian:to_fixed(
+      calcalc_persian:date(#{year => Y, month => 1, day => 1})
+    ).
+
 %%%%%%%%%%%%%
 %%% Utils %%%
 %%%%%%%%%%%%%

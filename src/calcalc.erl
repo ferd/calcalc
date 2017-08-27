@@ -105,6 +105,13 @@ fixed_from_jd(Jd) -> floor(moment_from_jd(Jd)).
 -spec jd_from_fixed(fixed()) -> julian_day().
 jd_from_fixed(Fixed) -> jd_from_moment(Fixed).
 
+-spec fixed_from_moment(moment()) -> calcalc:fixed().
+fixed_from_moment(Moment) -> calcalc_astro:fixed_from_moment(Moment).
+
+%% Time of day
+-spec time_from_moment(moment()) -> calcalc:time().
+time_from_moment(T) -> calcalc_astro:time_from_moment(T,1).
+
 -spec to(fixed | calendar(), date() | fixed()) -> date().
 %% To fixed mode
 to(fixed, D = #{cal := Mod}) -> Mod:to_fixed(D);
@@ -130,7 +137,7 @@ epoch(Cal) -> (mod(Cal)):epoch().
 %epoch(ethiopic) -> calcalc_ethiopic:epoch();
 %epoch(coptic) -> calcalc_coptic:epoch();
 %epoch(armenian) -> calcalc_armenian:epoch();
-%epoch(persian) -> 226896;
+%epoch(persian) -> calcalc_persian:epoch();
 %epoch(islamic) -> calcalc_islamic:epoch();
 %epoch(zoroastrian) -> calcalc_zoroastrian:epoch();
 %epoch(french_revolutionary) -> 654415;
@@ -159,6 +166,7 @@ mod(ethiopic) -> calcalc_ethiopic;
 mod(coptic) -> calcalc_coptic;
 mod(armenian) -> calcalc_armenian;
 mod(persian) -> calcalc_persian;
+mod(persian_arithmetic) -> calcalc_persian_arithmetic;
 mod(islamic) -> calcalc_islamic;
 mod(zoroastrian) -> calcalc_zoroastrian;
 mod(french_revolutionary) -> calcalc_french_revolutionary;
