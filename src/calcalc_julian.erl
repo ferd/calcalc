@@ -82,7 +82,7 @@ date_difference(Date1=#{}, Date2=#{}) ->
 is_leap_year(#{cal := ?CAL, year := Year}) ->
     is_leap_year(Year);
 is_leap_year(Year) when is_integer(Year) ->
-    mod(Year, 4) =:=  if Year > 0 -> 0; Year =< 0 -> 3 end.
+    mod(Year, 4) =:= if Year > 0 -> 0; Year =< 0 -> 3 end.
 
 new_year(Year) ->
     to_fixed(#{cal => ?CAL, year => Year, month => january(), day => 1}).

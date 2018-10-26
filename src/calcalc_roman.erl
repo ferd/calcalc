@@ -52,14 +52,14 @@ to_fixed(#{cal := ?CAL, year := Y, month := M,
             ))
     end % special day as a base
     - Count
-    + case is_leap_year(Y) andalso M =:= march()
+    + case calcalc_julian:is_leap_year(Y) andalso M =:= march()
            andalso Event =:= kalends andalso
            16 >= Count andalso Count >= 6 of
         true -> 0;
         false -> 1
     end
-    + if Leap =/= false -> 1
-       ; true -> 0 % leap has a type of 'false' or some tuple
+    + if Leap -> 1
+       ; not Leap -> 0
     end.
 
 
@@ -79,11 +79,11 @@ from_fixed(Date) ->
      ; D =< Ides ->
          #{cal => ?CAL, year => Y, month => M, event => ides,
            count => Ides - D + 1, leap => false}
-     ; M =/= February; not IsLeap ->
+     ; M =/= February orelse not IsLeap ->
          M2 = amod(M+1, 12),
          Y2 = if M2 =/= 1 -> Y
                ; Y =/= -1 -> Y+1
-               ; M =:= 1, Y =:= -1 -> 1
+               ; M2 =:= 1, Y =:= -1 -> 1
               end,
          Kalends = to_fixed(
                 #{cal => ?CAL, year => Y2, month => M2, event => kalends,
@@ -96,7 +96,7 @@ from_fixed(Date) ->
            count => 30 - D, leap => false}
      ; true ->
          #{cal => ?CAL, year => Y, month => march(), event => kalends,
-           count => 31 - D, leap => {day,25}}
+           count => 31 - D, leap => D =:= 25}
     end.
 
 ides(Month) ->

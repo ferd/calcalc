@@ -35,7 +35,7 @@ from_fixed(Date) ->
         true -> Approx+1;
         false -> Approx
     end,
-    Week = 1 + floor((Date - to_fixed(date_from_year(Approx)))/7),
+    Week = 1 + floor((Date - to_fixed(date_from_year(Year)))/7),
     Day = amod(Date - calcalc:fixed(0), 7),
     #{cal => ?CAL, year => Year, week => Week, day => Day}.
 

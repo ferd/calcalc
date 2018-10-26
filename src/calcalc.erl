@@ -129,19 +129,8 @@ epoch(Cal) -> (mod(Cal)):epoch().
 %epoch(mayan) -> -1137142;
 %epoch(hindu) -> -1132959;
 %epoch(chinese) -> -963099;
-%epoch(egyptian) -> calcalc_egyptian:epoch();
 %epoch(tibetan) -> -46410;
-%epoch(julian) -> calcalc_julian:epoch();
-%epoch(gregorian) -> calcalc_gregorian:epoch();
-%epoch(iso) -> calcalc_iso:epoch();
-%epoch(ethiopic) -> calcalc_ethiopic:epoch();
-%epoch(coptic) -> calcalc_coptic:epoch();
-%epoch(armenian) -> calcalc_armenian:epoch();
-%epoch(persian) -> calcalc_persian:epoch();
-%epoch(islamic) -> calcalc_islamic:epoch();
-%epoch(zoroastrian) -> calcalc_zoroastrian:epoch();
 %epoch(french_revolutionary) -> 654415;
-%epoch(?bahai) -> 673222.
 
 -spec is_valid(date()) -> boolean().
 is_valid(Date=#{cal := Cal}) -> Cal:is_valid(Date);
@@ -170,7 +159,9 @@ mod(persian_arithmetic) -> calcalc_persian_arithmetic;
 mod(islamic) -> calcalc_islamic;
 mod(zoroastrian) -> calcalc_zoroastrian;
 mod(french_revolutionary) -> calcalc_french_revolutionary;
+mod(bahai) -> calcalc_bahai;
 mod(?bahai) -> calcalc_bahai;
+mod(bahai_old) -> calcalc_bahai_old;
 %% Year-less calendars
 mod(bali) -> calcalc_bali;
 mod(mayan_haab) -> calcalc_mayan_haab; % (Month, Day) calendar
